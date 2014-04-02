@@ -62,6 +62,7 @@ not_compliant_on [:webdriver, :safari] do
         expect(Wait.timer).to eq(timer) 
       end
     end
+
   end
 
   describe Watir::Element do
