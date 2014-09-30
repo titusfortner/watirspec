@@ -271,10 +271,10 @@ describe "Browser" do
     end
 
     it "navigates between several history items" do
-      urls = [ "non_control_elements.html",
-               "tables.html",
-               "forms_with_input_elements.html",
-               "definition_lists.html"
+      urls = ["non_control_elements.html",
+              "tables.html",
+              "forms_with_input_elements.html",
+              "definition_lists.html"
       ].map do |page|
         browser.goto WatirSpec.url_for(page, :needs_server => true)
         browser.url
@@ -310,7 +310,7 @@ describe "Browser" do
   describe "#disable_checker" do
     it "removes a previously added checker" do
       output = ''
-      checker = lambda{ |browser| output << browser.text }
+      checker = lambda { |browser| output << browser.text }
 
       browser.add_checker(checker)
       browser.goto(WatirSpec.url_for("non_control_elements.html"))
@@ -320,6 +320,64 @@ describe "Browser" do
       browser.goto(WatirSpec.url_for("definition_lists.html"))
       expect(output).to_not include('definition_lists')
     end
+  end
+
+  describe "#implicit_wait" do
+
+    before do
+      browser.implicit_wait = 0
+      browser.goto WatirSpec.url_for 'dynamic.html'
+    end
+
+    it "should store the implicit wait timeout" do
+      browser.implicit_wait = 2
+      expect(browser.implicit_wait).to be == 2
+    end
+
+    it "should implicitly wait for a single element" do
+      browser.implicit_wait = 3
+      browser.input(:id, 'adder').click
+      expect(browser.div(:id, 'box0')).to exist
+    end
+
+    it "should fail to find an element with implicit waits disabled" do
+      browser.implicit_wait = 3
+      browser.implicit_wait = 0
+      browser.input(:id, 'adder').click
+      expect(browser.div(:id, 'box0')).to_not exist
+    end
+
+    it "should fail to find an element with insufficient implicit wait" do
+      browser.implicit_wait = 0.1
+      browser.input(:id, 'adder').click
+      expect(browser.div(:id, 'box0')).to_not exist
+    end
+
+    it "should implicitly wait until at least one element is found when searching for many" do
+      browser.implicit_wait = 3
+      2.times { browser.input(:id, 'adder').click }
+      expect(browser.divs(:class_name, 'redbox').size).to be > 0
+    end
+
+    it "should return after first attempt to find one after disabling implicit waits" do
+      browser.implicit_wait = 6
+      browser.implicit_wait = 0
+      browser.input(:id, 'adder').click
+      expect(browser.div(:id, 'box0')).to_not exist
+    end
+
+    it "should still fail to find elements when implicit waits are enabled" do
+      browser.implicit_wait = 0.5
+      expect(browser.divs(:class_name, 'redbox').size).to be == 0
+    end
+
+    it "should return after first attempt to find many after disabling implicit waits" do
+      browser.implicit_wait = 3
+      browser.implicit_wait = 0
+      browser.input(:id, 'adder').click
+      expect(browser.divs(:class_name, 'redbox').size).to be == 0
+    end
+
   end
 
   it "raises UnknownObjectException when trying to access DOM elements on plain/text-page" do
