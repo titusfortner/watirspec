@@ -184,6 +184,59 @@ not_compliant_on [:webdriver, :iphone], [:webdriver, :safari] do
       end
     end
 
+    context "with current window closed" do
+      before do
+        browser.goto WatirSpec.url_for("window_switching.html")
+        browser.a(:id => "open").click
+      end
+
+      after do
+        browser.window(:index, 0).use
+        browser.windows[1..-1].each { |win| win.close }
+      end
+
+      describe "#use" do
+
+        it "should find window by index" do
+          browser.window(:title => "closeable window").use
+          browser.a(:id => "close").click
+          expect(browser.window(:index, 0)).to be_present
+        end
+
+        it "should find window by" do
+          browser.window(:title => "closeable window").use
+          browser.a(:id => "close").click
+          expect(browser.window(:url, /window_switching\.html/)).to be_present
+        end
+
+        it "should find window by title" do
+          browser.window(:title => "closeable window").use
+          browser.a(:id => "close").click
+          expect(browser.window(:title, "window switching")).to be_present
+        end
+
+        it "should switch to window by index" do
+          browser.window(:title => "closeable window").use
+          browser.a(:id => "close").click
+          browser.window(:title, "window switching").use { expect(browser.title).to be == "window switching" }
+        end
+
+        it "should switch to window by url with two other windows" do
+          browser.a(:id => "open").click
+          browser.window(:index => 2).use
+          browser.a(:id => "close").click
+          browser.window(:url, /window_switching\.html/) { expect(browser.url).to match(/window_switching\.html/) }
+        end
+
+        it "should switch to window by title with two other windows" do
+          browser.a(:id => "open").click
+          browser.window(:index => 2).use
+          browser.a(:id => "close").click
+          browser.window(:title, "window switching").use { expect(browser.title).to be == "window switching" }
+        end
+      end
+    end
+
     context "manipulating size and position" do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
