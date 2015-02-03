@@ -357,9 +357,10 @@ describe "Browser" do
 
     it "runs checkers after Element#click" do
       browser.goto(WatirSpec.url_for("non_control_elements.html"))
-      @page_checker = Proc.new { raise if browser.title == "Non-control elements" }
+      @page_checker = Proc.new { @yield = browser.title == "Non-control elements" }
       browser.add_checker @page_checker
-      expect { browser.link(:index, 0).click }.to raise_error
+      browser.link(:index, 1).click
+      expect(@yield).to be true
     end
 
     not_compliant_on [:webdriver, :iphone] do
@@ -420,7 +421,7 @@ describe "Browser" do
 
   it "raises UnknownObjectException when trying to access DOM elements on plain/text-page" do
     browser.goto(WatirSpec.url_for("plain_text", :needs_server => true))
-    expect { browser.div(:id, 'foo').id }.to raise_error(UnknownObjectException)
+    expect { browser.div(:id, 'foo').id }.to raise_unknown_object_exception
   end
 
 end

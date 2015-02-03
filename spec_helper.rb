@@ -20,3 +20,30 @@ else
   WatirSpec::Runner.execute_if_necessary
 end
 
+CUSTOM_MATCHERS = {raise_unknown_object_exception: Watir::Exception::UnknownObjectException,
+                   raise_no_matching_window_exception: Watir::Exception::NoMatchingWindowFoundException,
+                   raise_unknown_frame_exception: Watir::Exception::UnknownFrameException}
+
+CUSTOM_MATCHERS.each do |matcher, exception|
+  RSpec::Matchers.define matcher do |expected|
+    match do |actual|
+      original_timeout = Watir.default_timeout
+      Watir.default_timeout = 0
+      begin
+        actual.call
+        false
+      rescue exception
+        true
+      ensure
+        Watir.default_timeout = original_timeout
+      end
+    end
+    failure_message_for_should do |actual|
+      "expected #{exception} but nothing was raised"
+    end
+
+    def supports_block_expectations?
+      true
+    end
+  end
+end

@@ -182,7 +182,7 @@ not_compliant_on [:webdriver, :safari] do
 
     after do
       # Reset the default timeout
-      Watir.default_timeout = 30
+      #Watir.default_timeout = 30
     end
 
     context "when no timeout is specified" do

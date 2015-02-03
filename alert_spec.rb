@@ -68,7 +68,7 @@ describe 'Alert API' do
             browser.button(:id => 'alert').click_no_wait
           end
 
-          browser.alert.when_present.close
+          browser.alert.close
           expect(browser.alert).to_not exist
         end
       end
@@ -76,7 +76,7 @@ describe 'Alert API' do
       describe 'when_present' do
         it 'waits until alert is present and goes on' do
           browser.button(:id => 'timeout-alert').click
-          browser.alert.when_present.close
+          browser.alert.when_present(5).close
 
           expect(browser.alert).to_not exist
         end
@@ -115,7 +115,7 @@ describe 'Alert API' do
             browser.button(:id => 'confirm').click_no_wait
           end
 
-          browser.alert.when_present.close
+          browser.alert.close
           expect(browser.button(:id => 'confirm').value).to eq "false"
         end
       end
