@@ -125,7 +125,7 @@ module WatirSpec
 
     get '/plain_text' do
       content_type 'text/plain'
-      'This is text/plain'
+      ' This is text/plain '
     end
 
     get '/ajax' do

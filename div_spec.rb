@@ -117,13 +117,13 @@ describe "Div" do
 
   describe "#text" do
     it "returns the text of the div" do
-      expect(browser.div(id: "footer").text.strip).to eq "This is a footer."
-      expect(browser.div(title: "Closing remarks").text.strip).to eq "This is a footer."
-      expect(browser.div(xpath: "//div[@id='footer']").text.strip).to eq "This is a footer."
+      expect(browser.div(id: "footer").text).to eq "This is a footer."
+      expect(browser.div(title: "Closing remarks").text).to eq "This is a footer."
+      expect(browser.div(xpath: "//div[@id='footer']").text).to eq "This is a footer."
     end
 
     it "returns an empty string if the element exists but contains no text" do
-      expect(browser.div(index: 0).text.strip).to eq ""
+      expect(browser.div(index: 0).text).to eq ""
     end
 
     it "returns an empty string if the div is hidden" do
