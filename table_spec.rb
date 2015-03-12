@@ -37,7 +37,7 @@ describe "Table" do
     end
 
     it "raises MissingWayOfFindingObjectException when 'how' argument is invalid" do
-      expect { browser.table(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
+      expect { browser.table(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
     end
   end
 
@@ -105,7 +105,7 @@ describe "Table" do
 
     not_compliant_on :webdriver, :watir_classic do
       it "raises UnknownRowException if the index is out of bounds" do
-        expect { browser.table(:id, 'outer')[1337] }.to raise_error(Watir::Exception::UnknownRowException)
+        expect { browser.table(:id, 'outer')[1337] }.to raise_unknown_row_exception
       end
     end
   end

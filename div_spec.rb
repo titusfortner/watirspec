@@ -44,7 +44,7 @@ describe "Div" do
     end
 
     it "raises MissingWayOfFindingObjectException when 'how' argument is invalid" do
-      expect { browser.div(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
+      expect { browser.div(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
     end
 
   end
@@ -60,10 +60,10 @@ describe "Div" do
     end
 
     it "raises UnknownObjectException if the element does not exist" do
-      expect { browser.div(:id, "no_such_id").class_name }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:title, "no_such_title").class_name }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:index, 1337).class_name }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:xpath, "//div[@id='no_such_id']").class_name }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.div(:id, "no_such_id").class_name }.to raise_unknown_object_exception
+      expect { browser.div(:title, "no_such_title").class_name }.to raise_unknown_object_exception
+      expect { browser.div(:index, 1337).class_name }.to raise_unknown_object_exception
+      expect { browser.div(:xpath, "//div[@id='no_such_id']").class_name }.to raise_unknown_object_exception
     end
   end
 
@@ -77,9 +77,9 @@ describe "Div" do
     end
 
     it "raises UnknownObjectException if the element does not exist" do
-      expect { browser.div(:id, "no_such_id").id }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:title, "no_such_id").id }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:index, 1337).id }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.div(:id, "no_such_id").id }.to raise_unknown_object_exception
+      expect { browser.div(:title, "no_such_id").id }.to raise_unknown_object_exception
+      expect { browser.div(:index, 1337).id }.to raise_unknown_object_exception
     end
 
     it "should take all conditions into account when locating by id" do
@@ -111,7 +111,7 @@ describe "Div" do
     end
 
     it "raises UnknownObjectException if the element does not exist" do
-      expect {browser.div(:id, "no_such_id").style }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect {browser.div(:id, "no_such_id").style }.to raise_unknown_object_exception
     end
   end
 
@@ -131,10 +131,10 @@ describe "Div" do
     end
 
     it "raises UnknownObjectException if the element does not exist" do
-      expect { browser.div(:id, "no_such_id").text }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:title, "no_such_title").text }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:index, 1337).text }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:xpath, "//div[@id='no_such_id']").text }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.div(:id, "no_such_id").text }.to raise_unknown_object_exception
+      expect { browser.div(:title, "no_such_title").text }.to raise_unknown_object_exception
+      expect { browser.div(:index, 1337).text }.to raise_unknown_object_exception
+      expect { browser.div(:xpath, "//div[@id='no_such_id']").text }.to raise_unknown_object_exception
     end
   end
 
@@ -156,10 +156,10 @@ describe "Div" do
     end
 
     it "raises UnknownObjectException if the element does not exist" do
-      expect { browser.div(:id, "no_such_id").click }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:title, "no_such_title").click }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:index, 1337).click }.to raise_error(Watir::Exception::UnknownObjectException)
-      expect { browser.div(:xpath, "//div[@id='no_such_id']").click }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.div(:id, "no_such_id").click }.to raise_unknown_object_exception
+      expect { browser.div(:title, "no_such_title").click }.to raise_unknown_object_exception
+      expect { browser.div(:index, 1337).click }.to raise_unknown_object_exception
+      expect { browser.div(:xpath, "//div[@id='no_such_id']").click }.to raise_unknown_object_exception
     end
   end
 

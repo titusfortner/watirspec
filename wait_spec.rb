@@ -183,6 +183,7 @@ not_compliant_on [:webdriver, :safari] do
 
   describe "Watir.default_timeout" do
     before do
+      @original_timeout = Watir.default_timeout
       Watir.default_timeout = 1
 
       browser.goto WatirSpec.url_for("wait.html", :needs_server => true)
@@ -190,7 +191,7 @@ not_compliant_on [:webdriver, :safari] do
 
     after do
       # Reset the default timeout
-      Watir.default_timeout = 30
+      Watir.default_timeout = @original_timeout
     end
 
     context "when no timeout is specified" do

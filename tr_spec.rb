@@ -31,7 +31,7 @@ describe "TableRow" do
     end
 
     it "raises MissingWayOfFindingObjectException when 'how' argument is invalid" do
-      expect { browser.tr(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
+      expect { browser.tr(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
     end
   end
 
@@ -56,8 +56,8 @@ describe "TableRow" do
 
     not_compliant_on :webdriver do #[] returns watir elements (lazy locate)
       it "raises UnknownCellException if the index is out of bounds" do
-        expect { table.tr(:index, 0)[1337] }.to raise_error(Watir::Exception::UnknownCellException)
-        expect { table[0][1337] }.to raise_error(Watir::Exception::UnknownCellException)
+        expect { table.tr(:index, 0)[1337] }.to raise_unknown_cell_exception
+        expect { table[0][1337] }.to raise_unknown_cell_exception
       end
     end
   end

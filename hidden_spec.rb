@@ -46,7 +46,7 @@ describe "Hidden" do
     end
 
     it "raises MissingWayOfFindingObjectException when 'how' argument is invalid" do
-      expect { browser.hidden(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
+      expect { browser.hidden(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
     end
   end
 
@@ -57,7 +57,7 @@ describe "Hidden" do
     end
 
     it "raises UnknownObjectException if the text field doesn't exist" do
-      expect { browser.hidden(:index, 1337).id }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.hidden(:index, 1337).id }.to raise_unknown_object_exception
     end
   end
 
@@ -67,7 +67,7 @@ describe "Hidden" do
     end
 
     it "raises UnknownObjectException if the text field doesn't exist" do
-      expect { browser.hidden(:index, 1337).name }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.hidden(:index, 1337).name }.to raise_unknown_object_exception
     end
   end
 
@@ -77,7 +77,7 @@ describe "Hidden" do
     end
 
     it "raises UnknownObjectException if the text field doesn't exist" do
-      expect { browser.hidden(:index, 1337).type }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.hidden(:index, 1337).type }.to raise_unknown_object_exception
     end
   end
 
@@ -87,7 +87,7 @@ describe "Hidden" do
     end
 
     it "raises UnknownObjectException if the text field doesn't exist" do
-      expect { browser.hidden(:index, 1337).value }.to raise_error(Watir::Exception::UnknownObjectException)
+      expect { browser.hidden(:index, 1337).value }.to raise_unknown_object_exception
     end
   end
 

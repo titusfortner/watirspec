@@ -46,8 +46,8 @@ describe "TableHeader" do
     end
 
     it "raises MissingWayOfFindingObjectException when 'how' argument is invalid" do
-      expect { browser.thead(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
-      expect { browser.table(:index, 0).thead(:no_such_how, 'some_value').exists? }.to raise_error(Watir::Exception::MissingWayOfFindingObjectException)
+      expect { browser.thead(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
+      expect { browser.table(:index, 0).thead(:no_such_how, 'some_value').exists? }.to raise_missing_way_of_finding_object_exception
     end
   end
 
