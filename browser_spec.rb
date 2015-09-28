@@ -118,15 +118,17 @@ describe "Browser" do
   end
 
   describe "#url" do
-    it "returns the current url" do
-      browser.goto(WatirSpec.url_for("non_control_elements.html"))
-      expect(browser.url).to eq WatirSpec.url_for("non_control_elements.html")
-    end
+    not_compliant_on %i(webdriver windows) do
+      it "returns the current url" do
+        browser.goto(WatirSpec.url_for("non_control_elements.html"))
+        expect(browser.url).to eq WatirSpec.url_for("non_control_elements.html")
+      end
 
-    it "always returns top url" do
-      browser.goto(WatirSpec.url_for("frames.html"))
-      browser.frame.body.exists? # switches to frame
-      expect(browser.url).to eq WatirSpec.url_for("frames.html")
+      it "always returns top url" do
+        browser.goto(WatirSpec.url_for("frames.html"))
+        browser.frame.body.exists? # switches to frame
+        expect(browser.url).to eq WatirSpec.url_for("frames.html")
+      end
     end
   end
 
