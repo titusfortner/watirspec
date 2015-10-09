@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Dds" do
 
@@ -7,11 +7,9 @@ describe "Dds" do
     browser.goto(WatirSpec.url_for("definition_lists.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.dds(text: "11 years").to_a).to eq [browser.dd(text: "11 years")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.dds(text: "11 years").to_a).to eq [browser.dd(text: "11 years")]
     end
   end
 
@@ -41,5 +39,4 @@ describe "Dds" do
       expect(count).to be > 0
     end
   end
-
 end

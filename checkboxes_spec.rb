@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "CheckBoxes" do
 
@@ -7,11 +7,9 @@ describe "CheckBoxes" do
     browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.checkboxes(value: "books").to_a).to eq [browser.checkbox(value: "books")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.checkboxes(value: "books").to_a).to eq [browser.checkbox(value: "books")]
     end
   end
 
@@ -32,7 +30,7 @@ describe "CheckBoxes" do
       count = 0
 
       browser.checkboxes.each_with_index do |c, index|
-        expect(c).to be_instance_of(CheckBox)
+        expect(c).to be_instance_of(Watir::CheckBox)
         expect(c.name).to eq browser.checkbox(index: index).name
         expect(c.id).to eq browser.checkbox(index: index).id
         expect(c.value).to eq browser.checkbox(index: index).value
@@ -43,5 +41,4 @@ describe "CheckBoxes" do
       expect(count).to be > 0
     end
   end
-
 end

@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Browser" do
 
@@ -14,20 +14,20 @@ describe "Browser" do
       expect(browser).to exist
     end
 
-    it "returns false if window is closed" do
-      browser.goto WatirSpec.url_for("window_switching.html")
-      browser.a(id: "open").click
-      browser.window(title: "closeable window").use
-      browser.a(id: "close").click
-      expect(browser.exists?).to be false
+    bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
+      it "returns false if window is closed" do
+        browser.goto WatirSpec.url_for("window_switching.html")
+        browser.a(id: "open").click
+        browser.window(title: "closeable window").use
+        browser.a(id: "close").click
+        expect(browser.exists?).to be false
+      end
     end
 
-    not_compliant_on(:safariwatir) do
-      it "returns false after Browser#close" do
-        b = WatirSpec.new_browser
-        b.close
-        expect(b).to_not exist
-      end
+    it "returns false after Browser#close" do
+      b = WatirSpec.new_browser
+      b.close
+      expect(b).to_not exist
     end
   end
 
@@ -45,14 +45,8 @@ describe "Browser" do
         expect(html).to include(' http-equiv="content-type"')
       end
 
-      deviates_on :internet_explorer9, :internet_explorer10 do
-        expect(html).to include(' http-equiv="content-type"')
-      end
-
-      not_compliant_on :internet_explorer9, :internet_explorer10 do
-        deviates_on :internet_explorer do
-          expect(html).to include(' http-equiv=content-type')
-        end
+      deviates_on :internet_explorer do
+        expect(html).to include(' http-equiv=content-type')
       end
     end
   end
@@ -65,33 +59,27 @@ describe "Browser" do
   end
 
   describe "#status" do
-    # for Firefox, this needs to be enabled in
-    # Preferences -> Content -> Advanced -> Change status bar text
-    #
-    # for IE9, this needs to be enabled in
-    # View => Toolbars -> Status bar
-    not_compliant_on %i(webdriver firefox), :internet_explorer9, :internet_explorer10 do
-      it "returns the current value of window.status" do
-        browser.goto(WatirSpec.url_for("non_control_elements.html"))
+    it "returns the current value of window.status" do
+      browser.goto(WatirSpec.url_for("non_control_elements.html"))
 
-        browser.execute_script "window.status = 'All done!';"
-        expect(browser.status).to eq "All done!"
-      end
+      browser.execute_script "window.status = 'All done!';"
+      expect(browser.status).to eq "All done!"
     end
   end
 
   describe "#name" do
     it "returns browser name" do
-      not_compliant_on :watir_classic, %i(webdriver phantomjs) do
-        expect(browser.name).to eq WatirSpec.implementation.browser_args[0]
+      not_compliant_on :phantomjs do
+        if WatirSpec.implementation.browser_args[0] == :remote
+          actual_browser = WatirSpec.implementation.browser_args.last[:desired_capabilities][:browser_name].to_sym
+        else
+          actual_browser = WatirSpec.implementation.browser_args[0]
+        end
+        expect(browser.name).to eq actual_browser
       end
 
-      deviates_on %i(webdriver phantomjs) do
+      deviates_on :phantomjs do
         expect(browser.name).to be_an_instance_of(Symbol)
-      end
-
-      deviates_on :watir_classic do
-        expect(browser.name).to eq :internet_explorer
       end
     end
   end
@@ -143,37 +131,22 @@ describe "Browser" do
   end
 
   describe ".start" do
-    not_compliant_on %i(webdriver, safariwatir) do
-      it "goes to the given URL and return an instance of itself" do
-        browser = WatirSpec.implementation.browser_class.start(WatirSpec.url_for("non_control_elements.html"))
+    it "goes to the given URL and return an instance of itself" do
+      driver, args = WatirSpec.implementation.browser_args
+      browser = Watir::Browser.start(WatirSpec.url_for("non_control_elements.html"), driver, args)
 
-        expect(browser).to be_instance_of(WatirSpec.implementation.browser_class)
-        expect(browser.title).to eq "Non-control elements"
-        browser.close
-      end
-    end
-
-    # we need to specify what browser to use
-    deviates_on(:webdriver) do
-      it "goes to the given URL and return an instance of itself" do
-        driver, args = WatirSpec.implementation.browser_args
-        browser = Watir::Browser.start(WatirSpec.url_for("non_control_elements.html"), driver, args)
-
-        expect(browser).to be_instance_of(Watir::Browser)
-        expect(browser.title).to eq "Non-control elements"
-        browser.close
-      end
+      expect(browser).to be_instance_of(Watir::Browser)
+      expect(browser.title).to eq "Non-control elements"
+      browser.close
     end
   end
 
   describe "#goto" do
-    not_compliant_on %i(webdriver internet_explorer) do
-      it "adds http:// to URLs with no URL scheme specified" do
-        url = WatirSpec.host[%r{http://(.*)}, 1]
-        expect(url).to_not be_nil
-        browser.goto(url)
-        expect(browser.url).to match(%r[http://#{url}/?])
-      end
+    it "adds http:// to URLs with no URL scheme specified" do
+      url = WatirSpec.host[%r{http://(.*)}, 1]
+      expect(url).to_not be_nil
+      browser.goto(url)
+      expect(browser.url).to match(%r[http://#{url}/?])
     end
 
     it "goes to the given url without raising errors" do
@@ -184,7 +157,7 @@ describe "Browser" do
       expect { browser.goto("about:blank") }.to_not raise_error
     end
 
-    not_compliant_on :internet_explorer, %i(webdriver safari) do
+    bug "After navigation all wire calls get `undefined is not an object (evaluating 'a.postMessage')`", :safari do
       it "goes to a data URL scheme address without raising errors" do
         expect { browser.goto("data:text/html;content-type=utf-8,foobar") }.to_not raise_error
       end
@@ -263,7 +236,7 @@ describe "Browser" do
     end
   end
 
-  not_compliant_on %i(webdriver safari) do
+  bug "https://code.google.com/p/selenium/issues/detail?id=3771", :safari do
     describe "#back and #forward" do
       it "goes to the previous page" do
         browser.goto WatirSpec.url_for("non_control_elements.html")
@@ -307,7 +280,7 @@ describe "Browser" do
   end
 
   it "raises UnknownObjectException when trying to access DOM elements on plain/text-page" do
-    browser.goto(WatirSpec.url_for("plain_text"))
+    browser.goto(WatirSpec.url_for("plain_text", needs_server: true))
     expect { browser.div(id: 'foo').id }.to raise_error(Watir::Exception::UnknownObjectException)
   end
 

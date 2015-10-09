@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Area" do
 
@@ -14,13 +14,8 @@ describe "Area" do
       expect(browser.area(id: /NCE/)).to exist
       expect(browser.area(title: "Tables")).to exist
       expect(browser.area(title: /Tables/)).to exist
-
-      not_compliant_on :internet_explorer do
-        expect(browser.area(href: "tables.html")).to exist
-      end
-
+      expect(browser.area(href: "tables.html")).to exist
       expect(browser.area(href: /tables/)).to exist
-
       expect(browser.area(index: 0)).to exist
       expect(browser.area(xpath: "//area[@id='NCE']")).to exist
     end
@@ -73,5 +68,4 @@ describe "Area" do
       expect(browser.area(index: 0)).to respond_to(:id)
     end
   end
-
 end

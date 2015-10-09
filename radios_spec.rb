@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Radios" do
 
@@ -7,11 +7,9 @@ describe "Radios" do
     browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.radios(value: "yes").to_a).to eq [browser.radio(value: "yes")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.radios(value: "yes").to_a).to eq [browser.radio(value: "yes")]
     end
   end
 
@@ -42,5 +40,4 @@ describe "Radios" do
       expect(count).to be > 0
     end
   end
-
 end

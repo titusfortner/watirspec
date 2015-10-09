@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Pres" do
 
@@ -7,11 +7,9 @@ describe "Pres" do
     browser.goto(WatirSpec.url_for("non_control_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.pres(class: "c++").to_a).to eq [browser.pre(class: "c++")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.pres(class: "c++").to_a).to eq [browser.pre(class: "c++")]
     end
   end
 
@@ -39,5 +37,4 @@ describe "Pres" do
       expect(count).to be > 0
     end
   end
-
 end

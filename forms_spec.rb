@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Forms" do
 
@@ -7,11 +7,9 @@ describe "Forms" do
     browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.forms(method: "post").to_a).to eq [browser.form(method: "post")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.forms(method: "post").to_a).to eq [browser.form(method: "post")]
     end
   end
 
@@ -43,5 +41,4 @@ describe "Forms" do
       expect(count).to be > 0
     end
   end
-
 end

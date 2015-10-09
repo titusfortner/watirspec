@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "FileFields" do
 
@@ -7,11 +7,9 @@ describe "FileFields" do
     browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.file_fields(class: "portrait").to_a).to eq [browser.file_field(class: "portrait")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.file_fields(class: "portrait").to_a).to eq [browser.file_field(class: "portrait")]
     end
   end
 
@@ -42,5 +40,4 @@ describe "FileFields" do
       expect(count).to be > 0
     end
   end
-
 end

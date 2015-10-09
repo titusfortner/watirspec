@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "TableBodies" do
 
@@ -7,11 +7,9 @@ describe "TableBodies" do
     browser.goto(WatirSpec.url_for("tables.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.tbodys(id: "first").to_a).to eq [browser.tbody(id: "first")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.tbodys(id: "first").to_a).to eq [browser.tbody(id: "first")]
     end
   end
 
@@ -61,5 +59,4 @@ describe "TableBodies" do
       expect(count).to be > 0
     end
   end
-
 end

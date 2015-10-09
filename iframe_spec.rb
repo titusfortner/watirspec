@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 #
 # TODO: fix duplication with frame_spec
@@ -26,12 +26,8 @@ describe "IFrame" do
       expect(browser.iframe(name: "iframe1")).to exist
       expect(browser.iframe(index: 0)).to exist
       expect(browser.iframe(class: "half")).to exist
-      not_compliant_on %i(watir_classic internet_explorer10) do
-        expect(browser.iframe(xpath: "//iframe[@id='iframe_1']")).to exist
-      end
-      not_compliant_on :watir_classic do
-        expect(browser.iframe(src: "iframe_1.html")).to exist
-      end
+      expect(browser.iframe(xpath: "//iframe[@id='iframe_1']")).to exist
+      expect(browser.iframe(src: "iframe_1.html")).to exist
       expect(browser.iframe(id: /iframe/)).to exist
       expect(browser.iframe(name: /iframe/)).to exist
       expect(browser.iframe(src: /iframe_1/)).to exist
@@ -85,13 +81,15 @@ describe "IFrame" do
     end
 
 
-    bug "https://github.com/detro/ghostdriver/issues/159", :phantomjs do
-      it "handles nested iframes" do
-        browser.goto(WatirSpec.url_for("nested_iframes.html"))
+    bug "Unable to get title after navigation from inside nested frames", :marionette do
+      bug "https://github.com/detro/ghostdriver/issues/159", :phantomjs do
+          it "handles nested iframes" do
+          browser.goto(WatirSpec.url_for("nested_iframes.html"))
 
-        browser.iframe(id: "two").iframe(id: "three").link(id: "four").click
+          browser.iframe(id: "two").iframe(id: "three").link(id: "four").click
 
-        Wait.until { browser.title == "definition_lists" }
+          Wait.until { browser.title == "definition_lists" }
+        end
       end
     end
 
@@ -157,12 +155,9 @@ describe "IFrame" do
   end
 
   describe "#html" do
-    not_compliant_on %i(webdriver iphone) do
-      it "returns the full HTML source of the iframe" do
-        browser.goto WatirSpec.url_for("iframes.html")
-        expect(browser.iframe.html.downcase).to include("<title>iframe 1</title>")
-      end
+    it "returns the full HTML source of the iframe" do
+      browser.goto WatirSpec.url_for("iframes.html")
+      expect(browser.iframe.html.downcase).to include("<title>iframe 1</title>")
     end
   end
-
 end

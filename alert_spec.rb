@@ -1,8 +1,8 @@
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
-describe 'Alert API' do
+bug "http://code.google.com/p/selenium/issues/detail?id=3862", :safari do
   bug "https://github.com/detro/ghostdriver/issues/20", :phantomjs do
-    not_compliant_on %i(webdriver safari) do
+    describe 'Alert API' do
       before do
         browser.goto WatirSpec.url_for("alerts.html")
       end
@@ -14,14 +14,7 @@ describe 'Alert API' do
       context 'alert' do
         describe '#text' do
           it 'returns text of alert' do
-            not_compliant_on :watir_classic do
-              browser.button(id: 'alert').click
-            end
-
-            deviates_on :watir_classic do
-              browser.button(id: 'alert').click_no_wait
-            end
-
+            browser.button(id: 'alert').click
             expect(browser.alert.text).to include('ok')
           end
         end
@@ -32,28 +25,14 @@ describe 'Alert API' do
           end
 
           it 'returns true if alert is present' do
-            not_compliant_on :watir_classic do
-              browser.button(id: 'alert').click
-            end
-
-            deviates_on :watir_classic do
-              browser.button(id: 'alert').click_no_wait
-            end
-
+            browser.button(id: 'alert').click
             browser.wait_until(10) { browser.alert.exists? }
           end
         end
 
         describe '#ok' do
           it 'closes alert' do
-            not_compliant_on :watir_classic do
-              browser.button(id: 'alert').click
-            end
-
-            deviates_on :watir_classic do
-              browser.button(id: 'alert').click_no_wait
-            end
-
+            browser.button(id: 'alert').click
             browser.alert.ok
             expect(browser.alert).to_not exist
           end
@@ -62,14 +41,7 @@ describe 'Alert API' do
         bug "https://code.google.com/p/chromedriver/issues/detail?id=26", [:chrome, :macosx] do
           describe '#close' do
             it 'closes alert' do
-              not_compliant_on :watir_classic do
-                browser.button(id: 'alert').click
-              end
-
-              deviates_on :watir_classic do
-                browser.button(id: 'alert').click_no_wait
-              end
-
+              browser.button(id: 'alert').click
               browser.alert.when_present.close
               expect(browser.alert).to_not exist
             end
@@ -95,14 +67,7 @@ describe 'Alert API' do
       context 'confirm' do
         describe '#ok' do
           it 'accepts confirm' do
-            not_compliant_on :watir_classic do
-              browser.button(id: 'confirm').click
-            end
-
-            deviates_on :watir_classic do
-              browser.button(id: 'confirm').click_no_wait
-            end
-
+            browser.button(id: 'confirm').click
             browser.alert.ok
             expect(browser.button(id: 'confirm').value).to eq "true"
           end
@@ -111,14 +76,7 @@ describe 'Alert API' do
         bug "https://code.google.com/p/chromedriver/issues/detail?id=26", [:chrome, :macosx] do
           describe '#close' do
             it 'cancels confirm' do
-              not_compliant_on :watir_classic do
-                browser.button(id: 'confirm').click
-              end
-
-              deviates_on :watir_classic do
-                browser.button(id: 'confirm').click_no_wait
-              end
-
+              browser.button(id: 'confirm').click
               browser.alert.when_present.close
               expect(browser.button(id: 'confirm').value).to eq "false"
             end
@@ -127,19 +85,14 @@ describe 'Alert API' do
       end
 
       context 'prompt' do
-        describe '#set' do
-          it 'enters text to prompt' do
-            not_compliant_on :watir_classic do
+        bug "Marionette Error: keysToSend.join is not a function", :marionette do
+          describe '#set' do
+            it 'enters text to prompt' do
               browser.button(id: 'prompt').click
+              browser.alert.set 'My Name'
+              browser.alert.ok
+              expect(browser.button(id: 'prompt').value).to eq 'My Name'
             end
-
-            deviates_on :watir_classic do
-              browser.button(id: 'prompt').click_no_wait
-            end
-
-            browser.alert.set 'My Name'
-            browser.alert.ok
-            expect(browser.button(id: 'prompt').value).to eq 'My Name'
           end
         end
       end

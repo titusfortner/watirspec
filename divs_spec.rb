@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Divs" do
 
@@ -7,11 +7,9 @@ describe "Divs" do
     browser.goto(WatirSpec.url_for("non_control_elements.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.divs(id: "header").to_a).to eq [browser.div(id: "header")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.divs(id: "header").to_a).to eq [browser.div(id: "header")]
     end
   end
 
@@ -41,5 +39,4 @@ describe "Divs" do
       expect(count).to be > 0
     end
   end
-
 end

@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Frames" do
 
@@ -7,11 +7,9 @@ describe "Frames" do
     browser.goto(WatirSpec.url_for("frames.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.frames(name: "frame2").to_a).to eq [browser.frame(name: "frame2")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.frames(name: "frame2").to_a).to eq [browser.frame(name: "frame2")]
     end
   end
 
@@ -41,4 +39,3 @@ describe "Frames" do
     end
   end
 end
-

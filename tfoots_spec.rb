@@ -1,16 +1,14 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "TableFooters" do
   before :each do
     browser.goto(WatirSpec.url_for("tables.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.tfoots(id: "tax_totals").to_a).to eq [browser.tfoot(id: "tax_totals")]
-      end
+  describe "with selectors" do
+    it "returns the matching elements" do
+      expect(browser.tfoots(id: "tax_totals").to_a).to eq [browser.tfoot(id: "tax_totals")]
     end
   end
 

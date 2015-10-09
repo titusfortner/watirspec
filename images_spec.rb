@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Images" do
 
@@ -7,12 +7,8 @@ describe "Images" do
     browser.goto(WatirSpec.url_for("images.html"))
   end
 
-  bug "http://github.com/jarib/celerity/issues#issue/25", :celerity do
-    describe "with selectors" do
-      it "returns the matching elements" do
-        expect(browser.images(alt: "circle").to_a).to eq [browser.image(alt: "circle")]
-      end
-    end
+  it "returns the matching elements" do
+    expect(browser.images(alt: "circle").to_a).to eq [browser.image(alt: "circle")]
   end
 
   describe "#length" do
@@ -39,5 +35,4 @@ describe "Images" do
       expect(count).to be > 0
     end
   end
-
 end
