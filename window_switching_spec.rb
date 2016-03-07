@@ -1,12 +1,11 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
+bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
   describe "Browser" do
     before do
       url = WatirSpec.url_for("window_switching.html")
       browser.goto url
       browser.a(id: "open").click
-      Watir::Wait.until { browser.windows.size == 2 }
     end
 
     after do
@@ -18,7 +17,7 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
       it "returns an array of window handles" do
         wins = browser.windows
         expect(wins).to_not be_empty
-        wins.each { |win| expect(win).to be_kind_of(Window) }
+        wins.each { |win| expect(win).to be_kind_of(Watir::Window) }
       end
 
       it "only returns windows matching the given selector" do
@@ -37,17 +36,17 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
     describe "#window" do
       it "finds window by :url" do
         w = browser.window(url: /closeable\.html/).use
-        expect(w).to be_kind_of(Window)
+        expect(w).to be_kind_of(Watir::Window)
       end
 
       it "finds window by :title" do
         w = browser.window(title: "closeable window").use
-        expect(w).to be_kind_of(Window)
+        expect(w).to be_kind_of(Watir::Window)
       end
 
       it "finds window by :index" do
         w = browser.window(index: 1).use
-        expect(w).to be_kind_of(Window)
+        expect(w).to be_kind_of(Watir::Window)
       end
 
       it "should not find incorrect handle" do
@@ -64,16 +63,14 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
         expect(original_window.url).to match(/window_switching\.html/)
       end
 
-      bug "http://github.com/jarib/celerity/issues#issue/17", :celerity do
-        it "it executes the given block in the window" do
-          browser.window(title: "closeable window") do
-            link = browser.a(id: "close")
-            expect(link).to exist
-            link.click
-          end.wait_while_present
+      it "it executes the given block in the window" do
+        browser.window(title: "closeable window") do
+          link = browser.a(id: "close")
+          expect(link).to exist
+          link.click
+        end.wait_while_present
 
-          expect(browser.windows.size).to eq 1
-        end
+        expect(browser.windows.size).to eq 1
       end
 
       it "raises ArgumentError if the selector is invalid" do
@@ -99,7 +96,6 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
-        Watir::Wait.until { browser.windows.size == 2 }
       end
 
       after do
@@ -109,16 +105,20 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
 
       describe "#close" do
         it "closes a window" do
+          expect(browser.windows.size).to eq 2
+
           browser.a(id: "open").click
-          Watir::Wait.until { browser.windows.size == 3 }
+          expect(browser.windows.size).to eq 3
 
           browser.window(title: "closeable window").close
           expect(browser.windows.size).to eq 2
         end
 
         it "closes the current window" do
+          expect(browser.windows.size).to eq 2
+
           browser.a(id: "open").click
-          Watir::Wait.until { browser.windows.size == 3 }
+          expect(browser.windows.size).to eq 3
 
           window = browser.window(title: "closeable window").use
           window.close
@@ -153,13 +153,14 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
 
         it "does not change the current window" do
           expect(browser.title).to eq "window switching"
-          expect(browser.windows.find { |w| w.title ==  "closeable window" }).to_not be_nil
+          expect(browser.windows.find { |w| w.title == "closeable window" }).to_not be_nil
           expect(browser.title).to eq "window switching"
         end
       end
 
       describe "#url" do
         it "returns the url of the window" do
+          expect(browser.windows.size).to eq 2
           expect(browser.windows.select { |w| w.url =~ (/window_switching\.html/) }.size).to eq 1
           expect(browser.windows.select { |w| w.url =~ (/closeable\.html$/) }.size).to eq 1
         end
@@ -198,7 +199,7 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
         it "times out waiting for a non-present window" do
           expect {
             browser.window(title: "noop").wait_until_present(0.5)
-          }.to raise_error(Wait::TimeoutError)
+          }.to raise_error(Watir::Wait::TimeoutError)
         end
       end
     end
@@ -207,7 +208,6 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
-        Watir::Wait.until { browser.windows.size == 2 }
       end
 
       after do
@@ -220,17 +220,13 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
           window = browser.window(title: "closeable window")
           window.use
           browser.a(id: "close").click
-          Watir::Wait.until { browser.windows.size == 1 }
           expect(window).to_not be_present
         end
 
-        bug "https://code.google.com/p/chromedriver/issues/detail?id=950", %i(webdriver chrome) do
-          it "returns false if closed window is referenced" do
-            browser.window(title: "closeable window").use
-            browser.a(id: "close").click
-            Watir::Wait.until { browser.windows.size == 1 }
-            expect(browser.window).to_not be_present
-          end
+        it "returns false if closed window is referenced" do
+          browser.window(title: "closeable window").use
+          browser.a(id: "close").click
+          expect(browser.window).to_not be_present
         end
       end
 
@@ -264,7 +260,6 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
         it "raises NoMatchingWindowFoundException error when attempting to use the current window if it is closed" do
           browser.window(title: "closeable window").use
           browser.a(id: "close").click
-          Watir::Wait.until { browser.windows.size == 1 }
           expect { browser.window.use }.to raise_error(Watir::Exception::NoMatchingWindowFoundException)
         end
       end
@@ -274,10 +269,8 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
-        Watir::Wait.until { browser.windows.size == 2 }
         browser.window(title: "closeable window").use
         browser.a(id: "close").click
-        Watir::Wait.until { browser.windows.size == 1 }
       end
 
       after do
@@ -324,7 +317,7 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
           end
 
           it "by url" do
-            browser.window(url: /window_switching\.html/).use  { expect(browser.title).to be == "window switching" }
+            browser.window(url: /window_switching\.html/).use { expect(browser.title).to be == "window switching" }
           end
 
           it "by title" do
@@ -338,30 +331,31 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
     context "manipulating size and position" do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
+        browser.window.resize_to(500, 500)
       end
 
-      compliant_on %i(webdriver firefox), %i(webdriver chrome) do
-        it "should get the size of the current window" do
-          size = browser.window.size
+      it "should get the size of the current window" do
+        size = browser.window.size
 
-          expect(size.width).to be > 0
-          expect(size.height).to be > 0
-        end
+        expect(size.width).to be > 0
+        expect(size.height).to be > 0
+      end
 
-        it "should get the position of the current window" do
-          pos = browser.window.position
+      it "should get the position of the current window" do
+        pos = browser.window.position
 
-          expect(pos.x).to be >= 0
-          expect(pos.y).to be >= 0
-        end
+        expect(pos.x).to be >= 0
+        expect(pos.y).to be >= 0
       end
 
       it "should resize the window" do
         initial_size = browser.window.size
         browser.window.resize_to(
-          initial_size.width - 10,
-          initial_size.height - 10
+            initial_size.width - 10,
+            initial_size.height - 10
         )
+
+        browser.wait_until { browser.window.size != initial_size }
 
         new_size = browser.window.size
 
@@ -369,34 +363,33 @@ not_compliant_on %i(webdriver iphone), %i(webdriver safari) do
         expect(new_size.height).to eq initial_size.height - 10
       end
 
-      bug "https://github.com/detro/ghostdriver/issues/466", :phantomjs do
-        it "should move the window" do
-          initial_pos = browser.window.position
+      bug "https://github.com/SeleniumHQ/selenium/issues/1148", :safari do
+        bug "https://github.com/detro/ghostdriver/issues/466", :phantomjs do
+          it "should move the window" do
+            initial_pos = browser.window.position
 
-          browser.window.move_to(
-            initial_pos.x + 10,
-            initial_pos.y + 10
-          )
+            browser.window.move_to(
+              initial_pos.x + 10,
+              initial_pos.y + 10
+            )
 
-          new_pos = browser.window.position
-          expect(new_pos.x).to eq initial_pos.x + 10
-          expect(new_pos.y).to eq initial_pos.y + 10
+            new_pos = browser.window.position
+            expect(new_pos.x).to eq initial_pos.x + 10
+            expect(new_pos.y).to eq initial_pos.y + 10
+          end
         end
       end
 
-      compliant_on %i(webdriver firefox window_manager) do
-        it "should maximize the window" do
-          initial_size = browser.window.size
+      it "should maximize the window" do
+        initial_size = browser.window.size
 
-          browser.window.maximize
-          browser.wait_until { browser.window.size != initial_size }
+        browser.window.maximize
+        browser.wait_until { browser.window.size != initial_size }
 
-          new_size = browser.window.size
-          expect(new_size.width).to be > initial_size.width
-          expect(new_size.height).to be > initial_size.height
-        end
+        new_size = browser.window.size
+        expect(new_size.width).to be > initial_size.width
+        expect(new_size.height).to be > initial_size.height
       end
     end
   end
-
 end

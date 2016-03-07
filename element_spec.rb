@@ -126,10 +126,10 @@ describe "Element" do
 
     it "returns a Button instance" do
       es = [
-        browser.input(xpath: "//input[@type='button']").to_subtype,
-        browser.input(xpath: "//input[@type='submit']").to_subtype,
-        browser.input(xpath: "//input[@type='reset']").to_subtype,
-        browser.input(xpath: "//input[@type='image']").to_subtype
+          browser.input(xpath: "//input[@type='button']").to_subtype,
+          browser.input(xpath: "//input[@type='submit']").to_subtype,
+          browser.input(xpath: "//input[@type='reset']").to_subtype,
+          browser.input(xpath: "//input[@type='image']").to_subtype
       ]
 
       es.all? { |e| expect(e).to be_kind_of(Watir::Button) }

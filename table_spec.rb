@@ -49,21 +49,11 @@ describe "Table" do
          "Table 2, Row 1, Cell 2"]
       ]
 
-      not_compliant_on :watir_classic do
-        expect(browser.table(id: 'outer').strings).to eq [
-          ["Table 1, Row 1, Cell 1", "Table 1, Row 1, Cell 2"],
-          ["Table 1, Row 2, Cell 1", "Table 1, Row 2, Cell 2\nTable 2, Row 1, Cell 1 Table 2, Row 1, Cell 2"],
-          ["Table 1, Row 3, Cell 1", "Table 1, Row 3, Cell 2"]
-       ]
-      end
-
-      deviates_on :watir_classic do
-        expect(browser.table(id: 'outer').strings).to eq [
-          ["Table 1, Row 1, Cell 1", "Table 1, Row 1, Cell 2"],
-          ["Table 1, Row 2, Cell 1", "Table 1, Row 2, Cell 2 Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2"],
-          ["Table 1, Row 3, Cell 1", "Table 1, Row 3, Cell 2"]
-       ]
-      end
+      expect(browser.table(id: 'outer').strings).to eq [
+        ["Table 1, Row 1, Cell 1", "Table 1, Row 1, Cell 2"],
+        ["Table 1, Row 2, Cell 1", "Table 1, Row 2, Cell 2\nTable 2, Row 1, Cell 1 Table 2, Row 1, Cell 2"],
+        ["Table 1, Row 3, Cell 1", "Table 1, Row 3, Cell 2"]
+     ]
     end
   end
 
@@ -102,12 +92,6 @@ describe "Table" do
       expect(browser.table(id: 'inner')[0].id).to eq "inner_first"
       expect(browser.table(id: 'outer')[2].id).to eq "outer_last"
     end
-
-    not_compliant_on :webdriver, :watir_classic do
-      it "raises UnknownRowException if the index is out of bounds" do
-        expect { browser.table(id: 'outer')[1337] }.to raise_error(Watir::Exception::UnknownRowException)
-      end
-    end
   end
 
   describe "#row" do
@@ -145,7 +129,7 @@ describe "Table" do
   describe "#tbody" do
     it "returns the correct instance of TableSection" do
       body = browser.table(index: 0).tbody(id: 'first')
-      expect(body).to be_instance_of(TableSection)
+      expect(body).to be_instance_of(Watir::TableSection)
       expect(body[0][0].text).to eq "March 2008"
     end
   end
@@ -154,7 +138,7 @@ describe "Table" do
     it "returns the correct instance of TableSection" do
       bodies = browser.table(index: 0).tbodys
 
-      expect(bodies).to be_instance_of(TableSectionCollection)
+      expect(bodies).to be_instance_of(Watir::TableSectionCollection)
 
       expect(bodies[0].id).to eq "first"
       expect(bodies[1].id).to eq "second"

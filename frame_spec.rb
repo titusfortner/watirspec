@@ -26,12 +26,8 @@ describe "Frame" do
       expect(browser.frame(name: "frame1")).to exist
       expect(browser.frame(index: 0)).to exist
       expect(browser.frame(class: "half")).to exist
-      not_compliant_on %i(watir_classic internet_explorer10) do
-        expect(browser.frame(xpath: "//frame[@id='frame_1']")).to exist
-      end
-      not_compliant_on :watir_classic do
-        expect(browser.frame(src: "frame_1.html")).to exist
-      end
+      expect(browser.frame(xpath: "//frame[@id='frame_1']")).to exist
+      expect(browser.frame(src: "frame_1.html")).to exist
       expect(browser.frame(id: /frame/)).to exist
       expect(browser.frame(name: /frame/)).to exist
       expect(browser.frame(src: /frame_1/)).to exist
@@ -56,13 +52,15 @@ describe "Frame" do
       expect(browser.frame(xpath: "//frame[@id='no_such_id']")).to_not exist
     end
 
-    bug "https://github.com/detro/ghostdriver/issues/159", :phantomjs do
-      it "handles nested frames" do
-        browser.goto(WatirSpec.url_for("nested_frames.html"))
+    bug "Unable to get title after navigation from inside nested frames", :marionette do
+      bug "https://github.com/detro/ghostdriver/issues/159", :phantomjs do
+        it "handles nested frames" do
+          browser.goto(WatirSpec.url_for("nested_frames.html"))
 
-        browser.frame(id: "two").frame(id: "three").link(id: "four").click
+          browser.frame(id: "two").frame(id: "three").link(id: "four").click
 
-        Wait.until{ browser.title == "definition_lists" }
+          Watir::Wait.until{ browser.title == "definition_lists" }
+        end
       end
     end
 
@@ -116,12 +114,9 @@ describe "Frame" do
   end
 
   describe "#html" do
-    not_compliant_on %i(webdriver iphone) do
-      it "returns the full HTML source of the frame" do
-        browser.goto WatirSpec.url_for("frames.html")
-        expect(browser.frame.html.downcase).to include("<title>frame 1</title>")
-      end
+    it "returns the full HTML source of the frame" do
+      browser.goto WatirSpec.url_for("frames.html")
+      expect(browser.frame.html.downcase).to include("<title>frame 1</title>")
     end
   end
-
 end

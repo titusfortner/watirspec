@@ -56,8 +56,8 @@ describe "Form" do
     end
   end
 
-  describe "#submit" do
-    not_compliant_on :celerity do
+  bug "Known Javascript Error", :marionette do
+    describe "#submit" do
       it "submits the form" do
         browser.form(id: "delete_user").submit
         Watir::Wait.until { !browser.url.include? 'forms_with_input_elements.html'}
@@ -71,8 +71,6 @@ describe "Form" do
         expect(messages.size).to eq 1
         expect(messages[0]).to eq "submit"
       end
-
     end
   end
-
 end
