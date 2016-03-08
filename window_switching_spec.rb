@@ -380,15 +380,17 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
         end
       end
 
-      it "should maximize the window" do
-        initial_size = browser.window.size
+      compliant_on %i(firefox window_manager) do
+        it "should maximize the window" do
+          initial_size = browser.window.size
 
-        browser.window.maximize
-        browser.wait_until { browser.window.size != initial_size }
+          browser.window.maximize
+          browser.wait_until { browser.window.size != initial_size }
 
-        new_size = browser.window.size
-        expect(new_size.width).to be > initial_size.width
-        expect(new_size.height).to be > initial_size.height
+          new_size = browser.window.size
+          expect(new_size.width).to be > initial_size.width
+          expect(new_size.height).to be > initial_size.height
+        end
       end
     end
   end
