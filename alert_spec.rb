@@ -15,6 +15,7 @@ bug "http://code.google.com/p/selenium/issues/detail?id=3862", :safari do
         describe '#text' do
           it 'returns text of alert' do
             browser.button(id: 'alert').click
+            Watir::Wait.until { browser.alert.exists? }
             expect(browser.alert.text).to include('ok')
           end
         end
