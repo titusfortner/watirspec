@@ -17,8 +17,10 @@ describe "Browser" do
     it "returns false if window is closed" do
       browser.goto WatirSpec.url_for("window_switching.html")
       browser.a(id: "open").click
+      Watir::Wait.until {browser.windows.size > 1}
       browser.window(title: "closeable window").use
       browser.a(id: "close").click
+      Watir::Wait.until {browser.windows.size < 2}
       expect(browser.exists?).to be false
     end
 
@@ -26,6 +28,7 @@ describe "Browser" do
       it "returns false after Browser#close" do
         b = WatirSpec.new_browser
         b.close
+        Watir::Wait.until {browser.windows.size < 1}
         expect(b).to_not exist
       end
     end
