@@ -308,9 +308,10 @@ describe "Browser" do
     end
   end
 
-  it "raises UnknownObjectException when trying to access DOM elements on plain/text-page" do
-    browser.goto(WatirSpec.url_for("plain_text"))
-    expect { browser.div(id: 'foo').id }.to raise_error(Watir::Exception::UnknownObjectException)
+  not_compliant_on :marionette do
+    it "raises UnknownObjectException when trying to access DOM elements on plain/text-page" do
+      browser.goto(WatirSpec.url_for("plain_text"))
+      expect { browser.div(id: 'foo').id }.to raise_error(Watir::Exception::UnknownObjectException)
+    end
   end
-
 end
