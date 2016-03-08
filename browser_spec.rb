@@ -28,7 +28,6 @@ describe "Browser" do
       it "returns false after Browser#close" do
         b = WatirSpec.new_browser
         b.close
-        Watir::Wait.until {browser.windows.size < 1}
         expect(b).to_not exist
       end
     end

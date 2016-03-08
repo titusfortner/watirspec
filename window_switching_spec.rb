@@ -6,6 +6,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
       url = WatirSpec.url_for("window_switching.html")
       browser.goto url
       browser.a(id: "open").click
+      Watir::Wait.until {browser.windows.size > 1}
     end
 
     after do
