@@ -96,6 +96,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
+        Watir::Wait.until {browser.windows.size > 1}
       end
 
       after do
@@ -108,9 +109,13 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           expect(browser.windows.size).to eq 2
 
           browser.a(id: "open").click
+          Watir::Wait.until {browser.windows.size > 2}
+
           expect(browser.windows.size).to eq 3
 
           browser.window(title: "closeable window").close
+          Watir::Wait.until {browser.windows.size < 3}
+
           expect(browser.windows.size).to eq 2
         end
 
@@ -118,10 +123,12 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           expect(browser.windows.size).to eq 2
 
           browser.a(id: "open").click
+          Watir::Wait.until {browser.windows.size > 2}
           expect(browser.windows.size).to eq 3
 
           window = browser.window(title: "closeable window").use
           window.close
+          Watir::Wait.until {browser.windows.size < 3}
           expect(browser.windows.size).to eq 2
         end
       end
@@ -208,6 +215,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
+        Watir::Wait.until {browser.windows.size > 1}
       end
 
       after do
@@ -220,12 +228,14 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           window = browser.window(title: "closeable window")
           window.use
           browser.a(id: "close").click
+          Watir::Wait.until {browser.windows.size < 2}
           expect(window).to_not be_present
         end
 
         it "returns false if closed window is referenced" do
           browser.window(title: "closeable window").use
           browser.a(id: "close").click
+          Watir::Wait.until {browser.windows.size < 2}
           expect(browser.window).to_not be_present
         end
       end
@@ -235,6 +245,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           original_window = browser.window
           browser.window(title: "closeable window").use
           original_window.close
+          Watir::Wait.until {browser.windows.size < 2}
           expect(original_window).to_not be_current
         end
       end
@@ -245,6 +256,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           other_window = browser.window(index: 1)
           other_window.use
           original_window.close
+          Watir::Wait.until {browser.windows.size < 2}
           expect(other_window == original_window).to be false
         end
       end
@@ -254,6 +266,7 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
           original_window = browser.window
           browser.window(index: 1).use
           original_window.close
+          Watir::Wait.until {browser.windows.size < 2}
           expect { original_window.use }.to raise_error(Watir::Exception::NoMatchingWindowFoundException)
         end
 
@@ -269,8 +282,10 @@ bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1128656", :marionette do
       before do
         browser.goto WatirSpec.url_for("window_switching.html")
         browser.a(id: "open").click
+        Watir::Wait.until {browser.windows.size > 1}
         browser.window(title: "closeable window").use
         browser.a(id: "close").click
+        Watir::Wait.until {browser.windows.size < 2}
       end
 
       after do
