@@ -45,14 +45,8 @@ describe "Browser" do
         expect(html).to include(' http-equiv="content-type"')
       end
 
-      deviates_on :internet_explorer9, :internet_explorer10 do
-        expect(html).to include(' http-equiv="content-type"')
-      end
-
-      not_compliant_on :internet_explorer9, :internet_explorer10 do
-        deviates_on :internet_explorer do
-          expect(html).to include(' http-equiv=content-type')
-        end
+      deviates_on :internet_explorer do
+        expect(html).to include(' http-equiv=content-type')
       end
     end
   end
@@ -70,7 +64,7 @@ describe "Browser" do
     #
     # for IE9, this needs to be enabled in
     # View => Toolbars -> Status bar
-    not_compliant_on %i(webdriver firefox), :internet_explorer9, :internet_explorer10 do
+    not_compliant_on %i(webdriver firefox) do
       it "returns the current value of window.status" do
         browser.goto(WatirSpec.url_for("non_control_elements.html"))
 
