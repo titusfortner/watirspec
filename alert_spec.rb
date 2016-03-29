@@ -85,12 +85,14 @@ describe 'Alert API' do
       end
 
       context 'prompt' do
-        describe '#set' do
-          it 'enters text to prompt' do
-            browser.button(id: 'prompt').click
-            browser.alert.set 'My Name'
-            browser.alert.ok
-            expect(browser.button(id: 'prompt').value).to eq 'My Name'
+        bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1255906", :marionette do
+          describe '#set' do
+            it 'enters text to prompt' do
+              browser.button(id: 'prompt').click
+              browser.alert.set 'My Name'
+              browser.alert.ok
+              expect(browser.button(id: 'prompt').value).to eq 'My Name'
+            end
           end
         end
       end

@@ -4,7 +4,7 @@ require File.expand_path("../spec_helper", __FILE__)
 describe "Form" do
 
   before :each do
-   browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
+    browser.goto(WatirSpec.url_for("forms_with_input_elements.html"))
   end
 
   describe "#exists?" do
@@ -50,19 +50,21 @@ describe "Form" do
     end
   end
 
-  describe "#submit" do
-    it "submits the form" do
-      browser.form(id: "delete_user").submit
-      Watir::Wait.until { !browser.url.include? 'forms_with_input_elements.html' }
-      expect(browser.text).to include("Semantic table")
-    end
+  bug "Known Javascript Error", :marionette do
+    describe "#submit" do
+      it "submits the form" do
+        browser.form(id: "delete_user").submit
+        Watir::Wait.until { !browser.url.include? 'forms_with_input_elements.html' }
+        expect(browser.text).to include("Semantic table")
+      end
 
-    it "triggers onsubmit event and takes its result into account" do
-      form = browser.form(name: "user_new")
-      form.submit
-      expect(form).to exist
-      expect(messages.size).to eq 1
-      expect(messages[0]).to eq "submit"
+      it "triggers onsubmit event and takes its result into account" do
+        form = browser.form(name: "user_new")
+        form.submit
+        expect(form).to exist
+        expect(messages.size).to eq 1
+        expect(messages[0]).to eq "submit"
+      end
     end
   end
 
