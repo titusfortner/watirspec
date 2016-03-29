@@ -51,8 +51,7 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
         verify_cookies_count 2
 
         compliant_on :safari do
-          $browser.close
-          $browser = WatirSpec.new_browser
+          restart_browser!
         end
       end
     end
@@ -66,6 +65,10 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
                    secure: true,
                    expires: expires}
 
+        deviates_on :marionette do
+          options.delete(:secure)
+        end
+
         browser.cookies.add 'a', 'b', options
         cookie = browser.cookies.to_a.find { |e| e[:name] == 'a' }
         expect(cookie).to_not be_nil
@@ -74,11 +77,14 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
         expect(cookie[:value]).to eq 'b'
 
         expect(cookie[:path]).to eq "/set_cookie"
-        expect(cookie[:secure]).to be true
 
-        expect(cookie[:expires]).to be_kind_of(Time)
-        # a few ms slack
-        expect((cookie[:expires]).to_i).to be_within(2).of(expires.to_i)
+        bug "https://bugzilla.mozilla.org/show_bug.cgi?id=1256007", :marionette do
+          expect(cookie[:secure]).to be true
+
+          expect(cookie[:expires]).to be_kind_of(Time)
+          # a few ms slack
+          expect((cookie[:expires]).to_i).to be_within(2).of(expires.to_i)
+        end
       end
     end
 
