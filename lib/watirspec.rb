@@ -16,15 +16,16 @@ end
 
 module WatirSpec
   class << self
-    attr_accessor :browser_args, :persistent_browser, :unguarded, :implementation, :always_use_server
+    attr_accessor :browser_args, :persistent_browser, :unguarded, :implementation,
+                  :always_use_server, :use_remote_server
 
     def html
       @html ||= File.expand_path("../../html", __FILE__)
     end
 
     def url_for(str, opts = {})
-      if opts[:needs_server] || always_use_server
-        File.join(host, str)
+      if opts[:needs_server] || always_use_server || use_remote_server
+        File.join(host(opts), str)
       else
         File.join(files, str)
       end
@@ -34,8 +35,12 @@ module WatirSpec
       @files ||= "file://#{html}"
     end
 
-    def host
-      @host ||= "http://#{Server.bind}:#{Server.port}"
+    def host(opts)
+      @host ||= if use_remote_server && !opts[:local_server]
+                  "https://rawgit.com/watir/watirspec/master/html"
+                else
+                  "http://#{Server.bind}:#{Server.port}"
+                end
     end
 
     def unguarded?

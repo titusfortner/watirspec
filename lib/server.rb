@@ -50,7 +50,7 @@ module WatirSpec
       end
 
       def autorun
-        @autorun ||= true
+        @autorun != false
       end
 
       def should_run?

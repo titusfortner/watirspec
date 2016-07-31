@@ -2,19 +2,21 @@ require File.expand_path("../spec_helper", __FILE__)
 
 bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
   describe "Browser#cookies" do
+    let(:cookie_count) { WatirSpec.use_remote_server ? 1 : 0 }
+
     after { browser.cookies.clear }
 
     it 'gets an empty list of cookies' do
       browser.goto WatirSpec.url_for 'collections.html' # no cookie set.
-      expect(browser.cookies.to_a).to eq []
+      expect(browser.cookies.to_a.size).to eq cookie_count
     end
 
     it "gets any cookies set" do
       browser.goto set_cookie_url
 
-      verify_cookies_count 1
+      verify_cookies_count cookie_count + 1
 
-      cookie = browser.cookies.to_a.first
+      cookie = browser.cookies.to_a.last
       expect(cookie[:name]).to eq 'monster'
       expect(cookie[:value]).to eq '1'
     end
@@ -22,7 +24,7 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
     describe '#[]' do
       before do
         browser.goto set_cookie_url
-        verify_cookies_count 1
+        verify_cookies_count cookie_count + 1
       end
 
       it 'returns cookie by symbol name' do
@@ -45,10 +47,10 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
     not_compliant_on :internet_explorer do
       it 'adds a cookie' do
         browser.goto set_cookie_url
-        verify_cookies_count 1
+        verify_cookies_count cookie_count + 1
 
         browser.cookies.add 'foo', 'bar'
-        verify_cookies_count 2
+        verify_cookies_count cookie_count + 2
 
         compliant_on :safari do
           $browser.close
@@ -85,17 +87,17 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
     not_compliant_on :internet_explorer do
       it 'removes a cookie' do
         browser.goto set_cookie_url
-        verify_cookies_count 1
+        verify_cookies_count cookie_count + 1
 
         browser.cookies.delete 'monster'
-        verify_cookies_count 0
+        verify_cookies_count cookie_count
       end
 
       bug "https://code.google.com/p/selenium/issues/detail?id=5487", :safari do
         it 'clears all cookies' do
           browser.goto set_cookie_url
           browser.cookies.add 'foo', 'bar'
-          verify_cookies_count 2
+          verify_cookies_count cookie_count + 2
 
           browser.cookies.clear
           verify_cookies_count 0
@@ -135,7 +137,7 @@ bug "https://github.com/ariya/phantomjs/issues/13115", :phantomjs do
 
     def set_cookie_url
       # add timestamp to url to avoid caching in IE8
-      WatirSpec.url_for('set_cookie/index.html', needs_server: true) + "?t=#{Time.now.to_i + Time.now.usec}"
+      WatirSpec.url_for('set_cookie/index.html', local_server: true) + "?t=#{Time.now.to_i + Time.now.usec}"
     end
 
     def verify_cookies_count expected_size

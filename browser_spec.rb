@@ -98,7 +98,7 @@ describe "Browser" do
 
     it "returns the text also if the content-type is text/plain" do
       # more specs for text/plain? what happens if we call other methods?
-      browser.goto(WatirSpec.url_for("plain_text", needs_server: true))
+      browser.goto(WatirSpec.url_for("plain_text", local_server: true))
       expect(browser.text.strip).to eq 'This is text/plain'
     end
 
